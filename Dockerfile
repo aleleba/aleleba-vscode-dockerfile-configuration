@@ -15,9 +15,6 @@ RUN sudo apt-get install -y jq
 RUN sudo apt-get update
 RUN sudo apt-get install dumb-init
 
-RUN adduser --gecos '' --disabled-password vscode \
-    && echo "vscode ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
-
 RUN ARCH="$(dpkg --print-architecture)" \
   && curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.6.0/fixuid-0.6.0-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - \
   && chown root:root /usr/local/bin/fixuid \
@@ -46,9 +43,5 @@ RUN sudo sysctl -w fs.inotify.max_user_watches=524288
 
 ADD ./entrypoint.sh /usr/bin/entrypoint.sh
 RUN sudo chmod +x /usr/bin/entrypoint.sh
-
-USER 1000
-ENV USER=vscode
-WORKDIR /home/vscode
 
 ENTRYPOINT ["/usr/bin/entrypoint.sh"]

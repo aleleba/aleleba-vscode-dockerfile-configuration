@@ -17,6 +17,28 @@ The following environment variables can be set when running the Docker container
 - `HOME_USER`: The username of the user running the container. This is used to set the correct permissions on files created in the container.
 - `VSCODE_TUNNEL_NAME`: The name of the SSH tunnel used by Visual Studio Code to connect to the container.
 
+### Custom Environment Variables
+
+You can set custom environment variables for the `HOME_USER` by using the `USER_ENV_` prefix when running the Docker container. These environment variables will be created in the `/home/${HOME_USER}/.bashrc` file without the `USER_ENV_` prefix.
+
+For example, if you want to set a custom environment variable named `MY_VARIABLE` for the `HOME_USER`, you can do so by setting the `USER_ENV_MY_VARIABLE` environment variable when running the Docker container:
+
+```bash
+docker run -it -e HOME_USER=custom-home-user -e USER_ENV_MY_VARIABLE=my_value -e VSCODE_TUNNEL_NAME=vscode-ssh-remote-server -v /path/to/extensions.json:/home/extensions.json aleleba/vscode
+```
+In this example, MY_VARIABLE will be set to my_value in the /home/${HOME_USER}/.bashrc file.
+
+### Global Environment Variables
+
+You can set global environment variables by using the `GLOBAL_ENV_` prefix when running the Docker container. These environment variables will be created in the `/etc/environment` file without the `GLOBAL_ENV_` prefix.
+
+For example, if you want to set a global environment variable named `MY_GLOBAL_VARIABLE`, you can do so by setting the `GLOBAL_ENV_MY_GLOBAL_VARIABLE` environment variable when running the Docker container:
+
+```bash
+docker run -it -e HOME_USER=custom-home-user -e GLOBAL_ENV_MY_GLOBAL_VARIABLE=my_global_value -e VSCODE_TUNNEL_NAME=vscode-ssh-remote-server -v /path/to/extensions.json:/home/extensions.json aleleba/vscode
+```
+In this example, MY_GLOBAL_VARIABLE will be set to my_global_value in the /etc/environment file.
+
 ### Adding VSCode Extensions
 
 To add VSCode extensions to the container, create a JSON file with an array of objects containing the extension details you want to install, the only Mandatory field is uniqueIdentifier and follow this structure. For example:
@@ -81,23 +103,39 @@ You can run this `docker-compose.yml` file by navigating to the directory where 
 
 This will start the container in the background and output the container ID. You can then use the `docker ps` command to view the running container.
 
-## Using this image as a base image in a Dockerfile
+## Adding Custom Scripts
 
-To use this image as a base image in a Dockerfile, you can add the following line to the top of your Dockerfile and you can install any additional packages you need, here an example installing nvm and nodejs in a `Dockerfile`:
+In this project, you can add custom scripts that will be automatically executed when the application starts. The `/usr/bin/custom-scripts` directory in the Docker container is a volume that maps to a directory on your host machine. Here's how you can add a custom script:
 
+### 1. Create a new script file
+
+Create a new file with a `.sh` extension in the directory on your host machine that maps to the `/usr/bin/custom-scripts` volume in the Docker container. For example, if the `/usr/bin/custom-scripts` volume maps to the `./custom-scripts` directory on your host machine, you can create a file named `install_node.sh` in the `./custom-scripts` directory.
+
+```bash
+touch ./custom-scripts/install_node.sh
 ```
-FROM aleleba/vscode:latest
 
-# Installing node.js and NVM
-SHELL ["/bin/bash", "--login", "-i", "-c"]
-RUN curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-RUN nvm install --lts
-RUN nvm alias default lts/*
-SHELL ["/bin/sh", "-c"]
-RUN echo 'source ~/.nvm/nvm.sh' >> ~/.bashrc
-# Finishing installing node.js and NVM
+### 2. Write your script
 
+Open the file in a text editor and write your script. Here's an example that installs Node.js using NVM:
+
+```bash
+#!/bin/bash
+# Installing Node.js with NVM
+curl -O https://raw.githubusercontent.com/creationix/nvm/master/install.sh
+bash install.sh
+source ~/.nvm/nvm.sh
+nvm install --lts
+nvm alias default lts/*
+nvm use default && npm install -g yo generator-code
+nvm use default && npm install -g @vscode/vsce
 ```
+The #!/bin/bash line at the top of the script tells the system that this script should be run with the Bash shell.
+
+### 3. Run your Docker container
+When you start your Docker container, all .sh files in the /usr/bin/custom-scripts directory will be automatically executed in alphabetical order. The environment variables from the /etc/environment file will be loaded before each script is executed.
+
+Remember to replace install_node.sh with the name of your script and ./custom-scripts with the actual path to the directory on your host machine that maps to the /usr/bin/custom-scripts volume in the Docker container.
 
 ## Contributing
 
