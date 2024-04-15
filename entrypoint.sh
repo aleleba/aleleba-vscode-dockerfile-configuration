@@ -39,14 +39,11 @@ USER="$HOME_USER"
 if ! id -u $HOME_USER > /dev/null 2>&1; then
   sudo adduser --disabled-password --gecos "" ${HOME_USER}
   sudo echo "$HOME_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/nopasswd > /dev/null
-fi
 
-# Then execute entrypoint.sh
-if [ "$HOME_USER" != "$(whoami)" ]; then
-  exec sudo -u $HOME_USER bash -c "source /etc/environment; /usr/bin/entrypoint.sh"
-
-# Execute the entrypoint.sh script as the user
-else
+  # Check if the .bashrc file exists, if not, create it
+  if [ ! -f /home/${HOME_USER}/.bashrc ]; then
+    sudo touch /home/${HOME_USER}/.bashrc
+  fi
 
   # Change the ownership of the .bashrc file
   sudo chown ${HOME_USER} /home/${HOME_USER}/.bashrc
@@ -66,9 +63,6 @@ else
     echo "export $line" | sudo tee -a /home/${HOME_USER}/.bashrc
   done
 
-  # Source the .bashrc file to apply the changes immediately
-  sudo su -l ${HOME_USER} -c "source ~/.bashrc"
-
   # Creating .vscode folder if it doesn't exist
   if [ ! -d "/home/${HOME_USER}/.vscode" ]; then
     sudo mkdir -p /home/${HOME_USER}/.vscode
@@ -76,6 +70,11 @@ else
 
   # Changing the property of the directory /home/${HOME_USER}/.vscode
   sudo chown -R ${HOME_USER}: /home/${HOME_USER}/.vscode
+fi
+
+# Then execute entrypoint.sh
+if [ "$HOME_USER" != "$(whoami)" ]; then
+  exec sudo -u $HOME_USER bash -c "source /etc/environment; /usr/bin/entrypoint.sh"  
 fi
 
 # Find .sh files in /usr/bin/custom-scripts and execute them in order
