@@ -110,8 +110,8 @@ else
     echo "File extensions.json not found"
 fi
 
-if [[ -v VSCODE_TUNNEL_NAME && -z "${VSCODE_TUNNEL_NAME}" ]]; then
-    sudo su - ${HOME_USER} -c "code tunnel --accept-server-license-terms"
-else
+if [[ -v VSCODE_TUNNEL_NAME && -n "${VSCODE_TUNNEL_NAME}" ]]; then
     sudo su - ${HOME_USER} -c "code tunnel --accept-server-license-terms --name ${VSCODE_TUNNEL_NAME}"
+else
+    sudo su - ${HOME_USER} -c "code tunnel --accept-server-license-terms"
 fi
