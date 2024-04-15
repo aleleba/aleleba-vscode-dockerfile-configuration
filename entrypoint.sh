@@ -9,8 +9,10 @@ if ! grep -q "HOME_USER=" /etc/environment; then
   sudo bash -c "echo HOME_USER=$HOME_USER >> /etc/environment"
 fi
 
-if [[ -n $VSCODE_TUNNEL_NAME ]] && ! grep -q "VSCODE_TUNNEL_NAME=" /etc/environment; then
-  sudo bash -c "echo VSCODE_TUNNEL_NAME=$VSCODE_TUNNEL_NAME >> /etc/environment"
+if [[ -n "${VSCODE_TUNNEL_NAME}" ]]; then
+  if ! grep -q "VSCODE_TUNNEL_NAME=" /etc/environment; then
+    sudo bash -c "echo VSCODE_TUNNEL_NAME=$VSCODE_TUNNEL_NAME >> /etc/environment"
+  fi
 fi
 
 # List all environment variables
