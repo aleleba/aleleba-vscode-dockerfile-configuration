@@ -40,6 +40,11 @@ if ! id -u $HOME_USER > /dev/null 2>&1; then
   sudo adduser --disabled-password --gecos "" ${HOME_USER}
   sudo echo "$HOME_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/nopasswd > /dev/null
 
+  # Check if the .bashrc file exists, if not, create it
+  if [ ! -f /home/${HOME_USER}/.bashrc ]; then
+    sudo touch /home/${HOME_USER}/.bashrc
+  fi
+
   # Change the ownership of the .bashrc file
   sudo chown ${HOME_USER} /home/${HOME_USER}/.bashrc
 
