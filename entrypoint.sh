@@ -9,7 +9,7 @@ if ! grep -q "HOME_USER=" /etc/environment; then
   sudo bash -c "echo HOME_USER=$HOME_USER >> /etc/environment"
 fi
 
-if [[ -n "${VSCODE_TUNNEL_NAME}" ]]; then
+if [[ -v VSCODE_TUNNEL_NAME && -n "${VSCODE_TUNNEL_NAME}" ]]; then
   if ! grep -q "VSCODE_TUNNEL_NAME=" /etc/environment; then
     sudo bash -c "echo VSCODE_TUNNEL_NAME=$VSCODE_TUNNEL_NAME >> /etc/environment"
   fi
