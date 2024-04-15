@@ -62,6 +62,15 @@ if ! id -u $HOME_USER > /dev/null 2>&1; then
   do
     echo "export $line" | sudo tee -a /home/${HOME_USER}/.bashrc
   done
+
+  # Creating .vscode folder if it doesn't exist
+  if [ ! -d "/home/${HOME_USER}/.vscode" ]; then
+    sudo mkdir -p /home/${HOME_USER}/.vscode
+  fi
+
+  # Changing the property of the directory /home/${HOME_USER}/.vscode
+  sudo chown -R ${HOME_USER}: /home/${HOME_USER}/.vscode
+
 fi
 
 # Then execute entrypoint.sh
