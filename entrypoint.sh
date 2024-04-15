@@ -48,6 +48,9 @@ if [ "$HOME_USER" != "$(whoami)" ]; then
 # Execute the entrypoint.sh script as the user
 else
 
+  # Change the ownership of the .bashrc file
+  sudo chown ${HOME_USER} /home/${HOME_USER}/.bashrc
+
   # List all environment variables
   sudo env |
 
@@ -62,6 +65,9 @@ else
   do
     echo "export $line" | sudo tee -a /home/${HOME_USER}/.bashrc
   done
+
+  # Source the .bashrc file to apply the changes immediately
+  sudo su -l ${HOME_USER} -c "source ~/.bashrc"
 
   # Creating .vscode folder if it doesn't exist
   if [ ! -d "/home/${HOME_USER}/.vscode" ]; then
