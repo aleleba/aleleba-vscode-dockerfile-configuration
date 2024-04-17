@@ -41,27 +41,27 @@ if ! id -u $HOME_USER > /dev/null 2>&1; then
   sudo echo "$HOME_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/nopasswd > /dev/null
 
   # Check if the .bashrc file exists, if not, create it
-  if [ ! -f /home/${HOME_USER}/.bashrc ]; then
-    sudo touch /home/${HOME_USER}/.bashrc
-  fi
+  #if [ ! -f /home/${HOME_USER}/.bashrc ]; then
+    #sudo touch /home/${HOME_USER}/.bashrc
+  #fi
 
   # Change the ownership of the .bashrc file
-  sudo chown ${HOME_USER} /home/${HOME_USER}/.bashrc
+  #sudo chown ${HOME_USER} /home/${HOME_USER}/.bashrc
 
   # List all environment variables
-  sudo env |
+  #sudo env |
 
   # Filter variables that start with USER_ENV_
-  grep -E '^USER_ENV_' |
+  #grep -E '^USER_ENV_' |
 
   # Remove the USER_ENV_ prefix
-  sed 's/^USER_ENV_//' |
+  #sed 's/^USER_ENV_//' |
 
   # Append the result to /home/${HOME_USER}/.bashrc
-  while IFS= read -r line
-  do
-    echo "export $line" | sudo -u ${HOME_USER} tee -a /home/${HOME_USER}/.bashrc
-  done
+  #while IFS= read -r line
+  #do
+    #echo "export $line" | sudo -u ${HOME_USER} tee -a /home/${HOME_USER}/.bashrc
+  #done
 
   # Creating .vscode folder if it doesn't exist
   if [ ! -d "/home/${HOME_USER}/.vscode" ]; then
@@ -74,7 +74,7 @@ fi
 
 # Then execute entrypoint.sh
 if [ "$HOME_USER" != "$(whoami)" ]; then
-  exec sudo -u $HOME_USER bash -c "source /etc/environment; /usr/bin/entrypoint.sh"  
+  exec sudo -u $HOME_USER bash -c "source /etc/environment; /usr/bin/entrypoint.sh"
 fi
 
 # Find .sh files in /usr/bin/custom-scripts and execute them in order
