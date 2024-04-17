@@ -75,6 +75,8 @@ fi
 # Then execute entrypoint.sh
 if [ "$HOME_USER" != "$(whoami)" ]; then
   exec sudo -u $HOME_USER bash -c "source /etc/environment; /usr/bin/entrypoint.sh"
+else
+  sudo chown -R 1000: /home/${HOME_USER}
 fi
 
 # Find .sh files in /usr/bin/custom-scripts and execute them in order
