@@ -41,6 +41,10 @@ RUN sudo chmod -R a+rwX /home
 
 RUN sudo sysctl -w fs.inotify.max_user_watches=524288
 
+ADD ./.bashrc /usr/bin/.bashrc
+RUN sudo chmod +x /usr/bin/.bashrc
+ADD ./.profile /usr/bin/.profile
+RUN sudo chmod +x /usr/bin/.profile
 ADD ./entrypoint.sh /usr/bin/entrypoint.sh
 RUN sudo chmod +x /usr/bin/entrypoint.sh
 
