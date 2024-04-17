@@ -37,7 +37,7 @@ done
 
 USER="$HOME_USER"
 if ! id -u $HOME_USER > /dev/null 2>&1; then
-  sudo adduser --disabled-password --gecos "" ${HOME_USER}
+  sudo adduser --disabled-password --gecos "" --uid 1000 ${HOME_USER}
   sudo echo "$HOME_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/nopasswd > /dev/null
 
   # Check if the .bashrc file exists, if not, create it
