@@ -69,14 +69,14 @@ if ! id -u $HOME_USER > /dev/null 2>&1; then
   fi
 
   # Changing the property of the directory /home/${HOME_USER}/.vscode
-  sudo chown -R ${HOME_USER}: /home/${HOME_USER}/.vscode
+  sudo chown -R ${HOME_USER} /home/${HOME_USER}/.vscode
 fi
 
 # Then execute entrypoint.sh
 if [ "$HOME_USER" != "$(whoami)" ]; then
   exec sudo -u $HOME_USER bash -c "source /etc/environment; /usr/bin/entrypoint.sh"
 else
-  sudo chown -R 1000: /home/${HOME_USER}
+  sudo chown -R 1000 /home/${HOME_USER}
 fi
 
 # Find .sh files in /usr/bin/custom-scripts and execute them in order
