@@ -47,7 +47,7 @@ sed 's/^USER_ENV_//' |
 # Append the result to /usr/bin/.bashrc
 while IFS= read -r line
 do
-  echo "export $line" | sudo -u ${HOME_USER} tee -a /usr/bin/.bashrc
+  echo "export $line" >> /usr/bin/.bashrc
 done
 
 USER="$HOME_USER"
