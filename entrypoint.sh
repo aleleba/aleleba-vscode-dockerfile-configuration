@@ -31,7 +31,8 @@ sed 's/^GLOBAL_ENV_//' |
 while IFS= read -r line
 do
   if ! grep -q "^${line%=*}=" /etc/environment; then
-    echo "export $line" | sudo tee -a /etc/environment
+    echo "" >> /etc/environment
+    echo "export $line" >> /etc/environment
   fi
 done
 
@@ -47,6 +48,7 @@ sed 's/^USER_ENV_//' |
 # Append the result to /usr/bin/.bashrc
 while IFS= read -r line
 do
+  echo "" >> /usr/bin/.bashrc
   echo "export $line" >> /usr/bin/.bashrc
 done
 
