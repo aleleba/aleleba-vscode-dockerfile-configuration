@@ -35,25 +35,25 @@ do
   fi
 done
 
+# List all environment variables
+printenv |
+
+# Filter variables that start with USER_ENV_
+grep -E '^USER_ENV_' |
+
+# Remove the USER_ENV_ prefix
+sed 's/^USER_ENV_//' |
+
+# Append the result to /usr/bin/.bashrc
+while IFS= read -r line
+do
+  echo "export $line" | sudo -u ${HOME_USER} tee -a /usr/bin/.bashrc
+done
+
 USER="$HOME_USER"
 if ! id -u $HOME_USER > /dev/null 2>&1; then
   sudo adduser --disabled-password --gecos "" --uid 1000 ${HOME_USER}
   sudo echo "$HOME_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/nopasswd > /dev/null
-
-  # List all environment variables
-  printenv |
-
-  # Filter variables that start with USER_ENV_
-  grep -E '^USER_ENV_' |
-
-  # Remove the USER_ENV_ prefix
-  sed 's/^USER_ENV_//' |
-
-  # Append the result to /usr/bin/.bashrc
-  while IFS= read -r line
-  do
-    echo "export $line" | sudo -u ${HOME_USER} tee -a /usr/bin/.bashrc
-  done
 
   # Creating .vscode folder if it doesn't exist
   if [ ! -d "/home/${HOME_USER}/.vscode" ]; then
