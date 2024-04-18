@@ -16,7 +16,7 @@ if [[ -v VSCODE_TUNNEL_NAME && -n "${VSCODE_TUNNEL_NAME}" ]]; then
 fi
 
 # List all environment variables
-sudo env |
+printenv |
 
 # Filter variables that start with GLOBAL_ENV_
 grep -E '^GLOBAL_ENV_' |
@@ -41,7 +41,7 @@ if ! id -u $HOME_USER > /dev/null 2>&1; then
   sudo echo "$HOME_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/nopasswd > /dev/null
 
   # List all environment variables
-  sudo env |
+  printenv |
 
   # Filter variables that start with USER_ENV_
   grep -E '^USER_ENV_' |
