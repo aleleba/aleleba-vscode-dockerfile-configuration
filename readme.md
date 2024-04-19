@@ -145,6 +145,33 @@ When you start your Docker container, all .sh files in the /usr/bin/custom-scrip
 
 Remember to replace install_node.sh with the name of your script and ./custom-scripts with the actual path to the directory on your host machine that maps to the /usr/bin/custom-scripts volume in the Docker container.
 
+## Using this image as a base image in a Dockerfile
+
+To use this image as a base image in a Dockerfile, you can add the following line to the top of your Dockerfile and you can install any additional packages you need, here an example installing nvm and nodejs in a `Dockerfile`:
+
+```
+FROM aleleba/vscode:latest
+
+ENV HOME_USER=vscode
+
+RUN sudo adduser --disabled-password --gecos "" --uid 1000 ${HOME_USER}
+RUN sudo echo "$HOME_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/nopasswd > /dev/null
+
+USER ${HOME_USER}
+WORKDIR /home/${HOME_USER}
+
+# Installing node.js and NVM
+SHELL ["/bin/bash", "--login", "-i", "-c"]
+RUN curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
+RUN nvm install --lts
+RUN nvm alias default lts/*
+SHELL ["/bin/sh", "-c"]
+RUN echo 'source ~/.nvm/nvm.sh' >> ~/.bashrc
+# Finishing installing node.js and NVM
+
+```
+> **Note:** If you are using this image as a base image in a Dockerfile, ensure that the value of `HOME_USER` is the same as the one you will use when creating the container. This is necessary to ensure that all configurations and packages are installed in the correct user directory.
+
 ## Contributing
 
 If you'd like to contribute to this project, please fork the repository and create a pull request.

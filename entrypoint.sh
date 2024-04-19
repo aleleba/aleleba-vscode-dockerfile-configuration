@@ -73,13 +73,21 @@ else
   sudo chown -R ${HOME_USER} /home/${HOME_USER}
 fi
 
-# Move the .bashrc file to the user's home directory
-sudo mv /usr/bin/.bashrc /home/${HOME_USER}/.bashrc
-sudo chown ${HOME_USER} /home/${HOME_USER}/.bashrc
+# Move the .bashrc file to the user's home directory if it doesn't exist
+if [ ! -f "/home/${HOME_USER}/.bashrc" ]; then
+  sudo mv /usr/bin/.bashrc /home/${HOME_USER}/.bashrc
+  sudo chown ${HOME_USER} /home/${HOME_USER}/.bashrc
+else
+  sudo rm -f /usr/bin/.bashrc
+fi
 
-# Move the .profile file to the user's home directory
-sudo mv /usr/bin/.profile /home/${HOME_USER}/.profile
-sudo chown ${HOME_USER} /home/${HOME_USER}/.profile
+# Move the .profile file to the user's home directory if it doesn't exist
+if [ ! -f "/home/${HOME_USER}/.profile" ]; then
+  sudo mv /usr/bin/.profile /home/${HOME_USER}/.profile
+  sudo chown ${HOME_USER} /home/${HOME_USER}/.profile
+else
+  sudo rm -f /usr/bin/.profile
+fi
 
 # Find .sh files in /usr/bin/custom-scripts and execute them in order
 for script in $(find /usr/bin/custom-scripts -name "*.sh" | sort); do
