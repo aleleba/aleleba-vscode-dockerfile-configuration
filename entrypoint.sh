@@ -76,7 +76,11 @@ fi
 # Find .sh files in /usr/bin/custom-scripts and execute them in order
 for script in $(find /usr/bin/custom-scripts -name "*.sh" | sort); do
   chmod +x $script
-  sudo -u $HOME_USER bash -c "source /etc/environment; sudo $script"
+  if [[ $script == *"sudo"* ]]; then
+    sudo -u $HOME_USER bash -c "source /etc/environment; sudo $script"
+  else
+    sudo -u $HOME_USER bash -c "source /etc/environment; $script"
+  fi
 done
 
 # Move the .bashrc file to the user's home directory
