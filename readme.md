@@ -132,6 +132,14 @@ nvm use default && npm install -g @vscode/vsce
 ```
 The #!/bin/bash line at the top of the script tells the system that this script should be run with the Bash shell.
 
+#### Note on sudo privileges
+
+If the script name includes the word "sudo", the script will be run with root privileges. This is useful if your script needs to perform operations that require superuser privileges.
+
+For instance, if you have a script named `install_sudo_package.sh`, this script will be run with root privileges due to the inclusion of "sudo" in the file name.
+
+Please be aware of the security implications when running scripts with root privileges. Ensure that your script does not perform any unsafe or destructive operations when run with these privileges.
+
 ### 3. Run your Docker container
 When you start your Docker container, all .sh files in the /usr/bin/custom-scripts directory will be automatically executed in alphabetical order. The environment variables from the /etc/environment file will be loaded before each script is executed.
 
