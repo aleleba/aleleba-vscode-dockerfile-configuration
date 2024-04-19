@@ -73,6 +73,14 @@ else
   sudo chown -R ${HOME_USER} /home/${HOME_USER}
 fi
 
+# Move the .bashrc file to the user's home directory
+sudo mv /usr/bin/.bashrc /home/${HOME_USER}/.bashrc
+sudo chown ${HOME_USER} /home/${HOME_USER}/.bashrc
+
+# Move the .profile file to the user's home directory
+sudo mv /usr/bin/.profile /home/${HOME_USER}/.profile
+sudo chown ${HOME_USER} /home/${HOME_USER}/.profile
+
 # Find .sh files in /usr/bin/custom-scripts and execute them in order
 for script in $(find /usr/bin/custom-scripts -name "*.sh" | sort); do
   chmod +x $script
@@ -82,14 +90,6 @@ for script in $(find /usr/bin/custom-scripts -name "*.sh" | sort); do
     sudo -u $HOME_USER bash -c "source /etc/environment; $script"
   fi
 done
-
-# Move the .bashrc file to the user's home directory
-sudo mv /usr/bin/.bashrc /home/${HOME_USER}/.bashrc
-sudo chown ${HOME_USER} /home/${HOME_USER}/.bashrc
-
-# Move the .profile file to the user's home directory
-sudo mv /usr/bin/.profile /home/${HOME_USER}/.profile
-sudo chown ${HOME_USER} /home/${HOME_USER}/.profile
 
 #Creating extensions folder
 if [ ! -d "/home/${HOME_USER}/.config/Code" ]; then
