@@ -48,8 +48,14 @@ sed 's/^USER_ENV_//' |
 # Append the result to /usr/bin/.bashrc
 while IFS= read -r line
 do
-  echo "" >> /usr/bin/.bashrc
-  echo "export $line" >> /usr/bin/.bashrc
+  # Check if the current user is root
+  if [ "$(id -u)" = "0" ]; then
+    echo "" >> /usr/bin/.bashrc
+    echo "export $line" >> /usr/bin/.bashrc
+  else
+    echo "" >> /home/${HOME_USER}/.bashrc
+    echo "export $line" >> /home/${HOME_USER}/.bashrc
+  fi
 done
 
 USER="$HOME_USER"
