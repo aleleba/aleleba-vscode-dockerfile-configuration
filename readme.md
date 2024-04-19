@@ -122,7 +122,7 @@ Open the file in a text editor and write your script. Here's an example that ins
 ```bash
 #!/bin/bash
 # Installing Node.js with NVM
-curl -O https://raw.githubusercontent.com/creationix/nvm/master/install.sh
+sudo curl -O https://raw.githubusercontent.com/creationix/nvm/master/install.sh
 bash install.sh
 source ~/.nvm/nvm.sh
 nvm install --lts
