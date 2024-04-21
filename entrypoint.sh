@@ -77,7 +77,7 @@ if [ "$HOME_USER" != "$(whoami)" ]; then
   exec sudo -u $HOME_USER bash -c "source /etc/environment; /usr/bin/entrypoint.sh"
 else
   sudo chown -R ${HOME_USER} /home/${HOME_USER}
-  chmod -R 600 /home/${HOME_USER}/.ssh
+  sudo chmod -R 600 /home/${HOME_USER}/.ssh
 fi
 
 # Move the .bashrc file to the user's home directory if it doesn't exist
