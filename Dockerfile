@@ -1,4 +1,6 @@
-FROM ubuntu:22.04
+FROM --platform=$BUILDPLATFORM ubuntu:22.04
+
+ARG TARGETARCH
 
 # Update the package list, install sudo, create a non-root user, and grant password-less sudo permissions
 RUN apt update
@@ -16,7 +18,7 @@ RUN sudo apt-get update
 RUN sudo apt-get install dumb-init
 
 RUN ARCH="$(dpkg --print-architecture)" \
-  && curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.6.0/fixuid-0.6.0-linux-$ARCH.tar.gz" | tar -C /usr/local/bin -xzf - \
+  && curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.6.0/fixuid-0.6.0-linux-${TARGETARCH}.tar.gz" | tar -C /usr/local/bin -xzf - \
   && chown root:root /usr/local/bin/fixuid \
   && chmod 4755 /usr/local/bin/fixuid \
   && mkdir -p /etc/fixuid \
@@ -32,7 +34,7 @@ RUN curl -sL https://aka.ms/DevTunnelCliInstall | bash
 RUN sudo apt-get update && sudo apt-get install -y gnupg2
 RUN sudo apt-get install -y software-properties-common
 RUN sudo wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-RUN sudo add-apt-repository "deb [arch=${ARCH}] https://packages.microsoft.com/repos/vscode stable main"
+RUN sudo add-apt-repository "deb [arch=${TARGETARCH}] https://packages.microsoft.com/repos/vscode stable main"
 RUN sudo apt update
 RUN sudo apt install code -y
 
