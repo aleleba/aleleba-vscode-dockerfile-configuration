@@ -78,7 +78,18 @@ if [ "$HOME_USER" != "$(whoami)" ]; then
 else
   sudo chown -R ${HOME_USER} /home/${HOME_USER}
   if [ -d "/home/${HOME_USER}/.ssh" ]; then
-    sudo chmod -R 600 /home/${HOME_USER}/.ssh
+    sudo chmod 755 /home/${HOME_USER}/.ssh
+    sudo chmod -R 600 /home/${HOME_USER}/.ssh/*
+    # Check if any .pub files exist in the .ssh directory
+    for file in /home/${HOME_USER}/.ssh/*.pub; do
+      if [ -f "$file" ]; then
+        sudo chmod 644 "$file"
+      fi
+    done
+    # Check if the known_hosts file exists in the .ssh directory
+    if [ -f "/home/${HOME_USER}/.ssh/known_hosts" ]; then
+      sudo chmod 644 /home/${HOME_USER}/.ssh/known_hosts
+    fi
   fi
 fi
 
