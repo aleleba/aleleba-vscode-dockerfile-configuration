@@ -32,7 +32,7 @@ RUN curl -sL https://aka.ms/DevTunnelCliInstall | bash
 RUN sudo apt-get update && sudo apt-get install -y gnupg2
 RUN sudo apt-get install -y software-properties-common
 RUN sudo wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-RUN sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+RUN sudo add-apt-repository "deb [arch=${ARCH}] https://packages.microsoft.com/repos/vscode stable main"
 RUN sudo apt update
 RUN sudo apt install code -y
 
