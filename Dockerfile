@@ -1,9 +1,5 @@
 FROM ubuntu:22.04
 
-# Configurar debconf para que use una interfaz no interactiva
-ENV DEBIAN_FRONTEND=noninteractive
-ENV DEBCONF_NONINTERACTIVE_SEEN=true
-
 # Update the package list, install sudo, create a non-root user, and grant password-less sudo permissions
 RUN apt update && apt install -y sudo
 
@@ -39,7 +35,7 @@ RUN ARCH="$(dpkg --print-architecture)" \
     && sudo wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add - \
     && sudo add-apt-repository "deb [arch=${ARCH}] https://packages.microsoft.com/repos/vscode stable main" \
     && sudo apt-get update \
-    && sudo apt-get install -y code
+    && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y code
 
 #Making home writable
 RUN sudo chmod -R a+rwX /home
