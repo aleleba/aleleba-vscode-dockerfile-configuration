@@ -1,8 +1,10 @@
 FROM ubuntu:22.04
 
+# Configurar debconf para que use una interfaz no interactiva
+ENV DEBIAN_FRONTEND=noninteractive
+
 # Update the package list, install sudo, create a non-root user, and grant password-less sudo permissions
-RUN apt update
-RUN apt install -y sudo
+RUN apt update && apt install -y sudo
 
 RUN sudo apt-get update
 #Instalando Curl
@@ -13,7 +15,7 @@ RUN sudo apt-get install -y wget
 RUN sudo apt-get install -y jq
 
 RUN sudo apt-get update
-RUN sudo apt-get install dumb-init
+RUN sudo apt-get install -y dumb-init
 
 RUN ARCH="$(dpkg --print-architecture)" \
   && curl -fsSL "https://github.com/boxboat/fixuid/releases/download/v0.6.0/fixuid-0.6.0-linux-${ARCH}.tar.gz" | tar -C /usr/local/bin -xzf - \
@@ -28,9 +30,6 @@ RUN ARCH="$(dpkg --print-architecture)" \
 #devtunnel token TUNNELID --scope connect
 RUN curl -sL https://aka.ms/DevTunnelCliInstall | bash
 
-# Configurar debconf para que use una interfaz no interactiva
-ENV DEBIAN_FRONTEND=noninteractive
-
 #Instalando VSCode
 RUN ARCH="$(dpkg --print-architecture)" \
     && sudo apt-get update \
@@ -38,10 +37,10 @@ RUN ARCH="$(dpkg --print-architecture)" \
     && sudo apt-get install -y software-properties-common \
     && sudo wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add - \
     && sudo add-apt-repository "deb [arch=${ARCH}] https://packages.microsoft.com/repos/vscode stable main" \
-    && sudo apt update \
-    && sudo apt install code -y
+    && sudo apt-get update \
+    && sudo apt-get install -y code
 
-#Making home writteable
+#Making home writable
 RUN sudo chmod -R a+rwX /home
 
 RUN sudo sysctl -w fs.inotify.max_user_watches=524288
