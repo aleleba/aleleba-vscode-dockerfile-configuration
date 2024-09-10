@@ -28,9 +28,13 @@ RUN ARCH="$(dpkg --print-architecture)" \
 #devtunnel token TUNNELID --scope connect
 RUN curl -sL https://aka.ms/DevTunnelCliInstall | bash
 
+# Configurar debconf para que use una interfaz no interactiva
+ENV DEBIAN_FRONTEND=noninteractive
+
 #Instalando VSCode
 RUN ARCH="$(dpkg --print-architecture)" \
-    && sudo apt-get update && sudo apt-get install -y gnupg2 \
+    && sudo apt-get update \
+    && sudo apt-get install -y gnupg2 \
     && sudo apt-get install -y software-properties-common \
     && sudo wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add - \
     && sudo add-apt-repository "deb [arch=${ARCH}] https://packages.microsoft.com/repos/vscode stable main" \
