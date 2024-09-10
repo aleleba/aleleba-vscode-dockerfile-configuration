@@ -2,6 +2,7 @@ FROM ubuntu:22.04
 
 # Configurar debconf para que use una interfaz no interactiva
 ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBCONF_NONINTERACTIVE_SEEN=true
 
 # Update the package list, install sudo, create a non-root user, and grant password-less sudo permissions
 RUN apt update && apt install -y sudo
