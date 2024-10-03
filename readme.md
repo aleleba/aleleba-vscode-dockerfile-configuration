@@ -172,6 +172,8 @@ RUN echo 'source ~/.nvm/nvm.sh' >> ~/.bashrc
 ```
 > **Note:** If you are using this image as a base image in a Dockerfile, ensure that the value of `HOME_USER` is the same as the one you will use when creating the container. This is necessary to ensure that all configurations and packages are installed in the correct user directory.
 
+> **Note:** To grant access to the server, please log into https://github.com/login/device and use the code XXXX-XXXX. You can view the container logs to get the code.
+
 ## Contributing
 
 If you'd like to contribute to this project, please fork the repository and create a pull request.
