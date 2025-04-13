@@ -159,10 +159,25 @@ fi
 
 # Check if CLI directory exists and has content
 if [ -d "/home/${HOME_USER}/.vscode/cli" ] && [ "$(ls -A /home/${HOME_USER}/.vscode/cli 2>/dev/null)" ]; then
-    # CLI directory exists and has content, use restart
-    sudo su ${HOME_USER} -c "code tunnel restart"
+    # CLI directory exists and has content, ensure proper permissions first
+    sudo chmod -R a+rwX /home/${HOME_USER}/.vscode/cli
+    
+    # Wait briefly to ensure services are up
+    sleep 2
+    
+    echo "Restarting VS Code tunnel..."
+    # Try to restart, but fall back to normal startup if it fails
+    if ! sudo su ${HOME_USER} -c "code tunnel restart"; then
+        echo "Tunnel restart failed, trying normal startup..."
+        if [[ -v VSCODE_TUNNEL_NAME && -n "${VSCODE_TUNNEL_NAME}" ]]; then
+            sudo su ${HOME_USER} -c "code tunnel --accept-server-license-terms --name ${VSCODE_TUNNEL_NAME}"
+        else
+            sudo su ${HOME_USER} -c "code tunnel --accept-server-license-terms"
+        fi
+    fi
 else
     # No CLI directory or empty, use normal startup
+    echo "Starting new VS Code tunnel session..."
     if [[ -v VSCODE_TUNNEL_NAME && -n "${VSCODE_TUNNEL_NAME}" ]]; then
         sudo su ${HOME_USER} -c "code tunnel --accept-server-license-terms --name ${VSCODE_TUNNEL_NAME}"
     else
