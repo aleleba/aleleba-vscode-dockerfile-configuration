@@ -159,8 +159,8 @@ fi
 
 # Check if CLI directory exists and has content
 if [ -d "/home/${HOME_USER}/.vscode/cli" ] && [ "$(ls -A /home/${HOME_USER}/.vscode/cli 2>/dev/null)" ]; then
-    # CLI directory exists and has content, use restart
-    sudo su ${HOME_USER} -c "code tunnel restart --cli-data-dir /home/${HOME_USER}/.vscode/cli"
+    # CLI directory exists and has content, use cli data
+    sudo su ${HOME_USER} -c "code tunnel --cli-data-dir /home/${HOME_USER}/.vscode/cli"
 else
     # No CLI directory or empty, use normal startup
     if [[ -v VSCODE_TUNNEL_NAME && -n "${VSCODE_TUNNEL_NAME}" ]]; then
