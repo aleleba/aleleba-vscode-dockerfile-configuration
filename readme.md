@@ -39,6 +39,15 @@ docker run -it -e HOME_USER=custom-home-user -e GLOBAL_ENV_MY_GLOBAL_VARIABLE=my
 ```
 In this example, MY_GLOBAL_VARIABLE will be set to my_global_value in the /etc/environment file.
 
+### Persistent VS Code Tunnel
+
+You can maintain the VS Code tunnel configuration between container restarts by adding a volume mount to `/home/${HOME_USER}/.vscode/cli`. When this volume is mounted and the container restarts, it will use `code tunnel restart` to reconnect using the existing tunnel configuration instead of creating a new one.
+
+Example:
+```bash
+docker run -it -e HOME_USER=custom-home-user -e VSCODE_TUNNEL_NAME=vscode-ssh-remote-server -v /path/to/vscode-cli:/home/custom-home-user/.vscode/cli -v /path/to/extensions.json:/home/extensions.json aleleba/vscode
+```
+
 ### Adding VSCode Extensions
 
 To add VSCode extensions to the container, create a JSON file with an array of objects containing the extension details you want to install, the only Mandatory field is uniqueIdentifier and follow this structure. For example:
@@ -170,6 +179,9 @@ RUN echo 'source ~/.nvm/nvm.sh' >> ~/.bashrc
 # Finishing installing node.js and NVM
 
 ```
+
+
+
 > **Note:** If you are using this image as a base image in a Dockerfile, ensure that the value of `HOME_USER` is the same as the one you will use when creating the container. This is necessary to ensure that all configurations and packages are installed in the correct user directory.
 
 > **Note:** To grant access to the server, please log into https://github.com/login/device and use the code XXXX-XXXX. You can view the container logs to get the code.
