@@ -157,14 +157,8 @@ else
     echo "File extensions.json not found"
 fi
 
-# Check if CLI directory exists and has content
-if [ -d "/home/${HOME_USER}/.vscode/cli" ] && [ "$(ls -A /home/${HOME_USER}/.vscode/cli 2>/dev/null)" ]; then
-    sudo su ${HOME_USER} -c "code tunnel"
+if [[ -v VSCODE_TUNNEL_NAME && -n "${VSCODE_TUNNEL_NAME}" ]]; then
+    sudo su ${HOME_USER} -c "code tunnel --accept-server-license-terms --name ${VSCODE_TUNNEL_NAME}"
 else
-    # No CLI directory or empty, use normal startup
-    if [[ -v VSCODE_TUNNEL_NAME && -n "${VSCODE_TUNNEL_NAME}" ]]; then
-        sudo su ${HOME_USER} -c "code tunnel --accept-server-license-terms --name ${VSCODE_TUNNEL_NAME}"
-    else
-        sudo su ${HOME_USER} -c "code tunnel --accept-server-license-terms"
-    fi
+    sudo su ${HOME_USER} -c "code tunnel --accept-server-license-terms"
 fi
