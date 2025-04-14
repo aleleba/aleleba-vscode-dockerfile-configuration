@@ -188,7 +188,7 @@ if [ -d "/home/${HOME_USER}/.vscode/cli" ] && [ "$(ls -A /home/${HOME_USER}/.vsc
     
     # Create tunnel with extracted values if available
     if [ -n "$TOKEN" ] && [ -n "$TUNNEL_ID" ]; then
-        sudo su ${HOME_USER} -c "code tunnel --name ${VSCODE_TUNNEL_NAME} --tunnel-id ${TUNNEL_ID}--host-token ${TOKEN}"
+        sudo su ${HOME_USER} -c "code tunnel --name ${VSCODE_TUNNEL_NAME} --tunnel-id ${TUNNEL_ID} --host-token ${TOKEN}"
     else
         # Fallback to simpler command if values couldn't be extracted
         sudo su ${HOME_USER} -c "code tunnel --name ${VSCODE_TUNNEL_NAME}"
