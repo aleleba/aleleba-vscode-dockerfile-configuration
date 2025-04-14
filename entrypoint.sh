@@ -159,40 +159,7 @@ fi
 
 # Check if CLI directory exists and has content
 if [ -d "/home/${HOME_USER}/.vscode/cli" ] && [ "$(ls -A /home/${HOME_USER}/.vscode/cli 2>/dev/null)" ]; then
-    # CLI directory exists and has content, extract token and tunnel information
-    
-    # Extract token from token.json if it exists
-    TOKEN_FILE="/home/${HOME_USER}/.vscode/cli/token.json"
-    if [ -f "$TOKEN_FILE" ]; then
-        TOKEN=$(cat "$TOKEN_FILE" | tr -d '\n')
-    else
-        TOKEN=""
-    fi
-    
-    # Extract id and cluster from code_tunnel.json if it exists
-    TUNNEL_FILE="/home/${HOME_USER}/.vscode/cli/code_tunnel.json"
-    if [ -f "$TUNNEL_FILE" ]; then
-        if command -v jq &> /dev/null; then
-            # Use jq if available
-            ID=$(jq -r '.id' "$TUNNEL_FILE")
-            CLUSTER=$(jq -r '.cluster' "$TUNNEL_FILE")
-        else
-            # Fallback to grep and cut if jq is not available
-            ID=$(grep -o '"id"[^,}]*' "$TUNNEL_FILE" | cut -d'"' -f4)
-            CLUSTER=$(grep -o '"cluster"[^,}]*' "$TUNNEL_FILE" | cut -d'"' -f4)
-        fi
-        TUNNEL_ID="${ID}.${CLUSTER}"
-    else
-        TUNNEL_ID=""
-    fi
-    
-    # Create tunnel with extracted values if available
-    if [ -n "$TOKEN" ] && [ -n "$TUNNEL_ID" ]; then
-        sudo su ${HOME_USER} -c "code tunnel --name ${VSCODE_TUNNEL_NAME} --tunnel-id ${TUNNEL_ID} --host-token ${TOKEN}"
-    else
-        # Fallback to simpler command if values couldn't be extracted
-        sudo su ${HOME_USER} -c "code tunnel --name ${VSCODE_TUNNEL_NAME}"
-    fi
+    sudo su ${HOME_USER} -c "code tunnel"
 else
     # No CLI directory or empty, use normal startup
     if [[ -v VSCODE_TUNNEL_NAME && -n "${VSCODE_TUNNEL_NAME}" ]]; then
