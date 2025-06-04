@@ -111,13 +111,19 @@ fi
 
 # Find .sh files in /usr/bin/custom-scripts and execute them in order
 for script in $(find /usr/bin/custom-scripts -name "*.sh" | sort); do
-  chmod +x $script
+  # Ensure the script is executable
+  if [ ! -x $script ]; then
+    sudo chmod +x $script
+  fi
+
+  # Execute the script as the configured user
   if [[ $script == *"sudo"* ]]; then
     sudo -u $HOME_USER bash -c "source /etc/environment; sudo $script"
   else
     sudo -u $HOME_USER bash -c "source /etc/environment; $script"
   fi
 done
+
 
 #Creating extensions folder
 if [ ! -d "/home/${HOME_USER}/.config/Code" ]; then
