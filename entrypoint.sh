@@ -152,7 +152,7 @@ if [ -f "/home/extensions.json" ]; then
     # Loop through the extensions and process each element
     for extension in $extensions; do
         echo "Installing extension: $extension"
-        sudo su ${HOME_USER} -c "code --install-extension $extension"
+        sudo su ${HOME_USER} -c "code --install-extension $extension --force"
     done
     sudo cp -R /home/${HOME_USER}/.vscode/* /home/${HOME_USER}/.vscode-server
     sudo cp -R /home/${HOME_USER}/.vscode/* /home/${HOME_USER}/.vscode-server-insiders
