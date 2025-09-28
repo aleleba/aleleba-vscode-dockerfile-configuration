@@ -38,7 +38,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           tags: |
             aleleba/vscode:latest
-            gitea.p-lao.com/aleleba/vscode-server:latest
+            gitea.p-lao.com/aleleba/vscode:latest
 
       - name: Trigger workflow in Gitea
         if: success()
