@@ -76,7 +76,7 @@ fi
 if [ "$HOME_USER" != "$(whoami)" ]; then
   exec sudo -u $HOME_USER bash -c "source /etc/environment; /usr/bin/entrypoint.sh"
 else
-  sudo chown -R ${HOME_USER} /home/${HOME_USER}
+  sudo find "/home/${HOME_USER}" -xdev -exec chown "${HOME_USER}" {} + 2>/dev/null || true
   if [ -d "/home/${HOME_USER}/.ssh" ]; then
     sudo chmod 755 /home/${HOME_USER}/.ssh
     sudo chmod -R 600 /home/${HOME_USER}/.ssh/*
