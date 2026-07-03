@@ -29,13 +29,16 @@ RUN curl -sL https://aka.ms/DevTunnelCliInstall | bash
 
 #Instalando VSCode
 RUN ARCH="$(dpkg --print-architecture)" \
+    && case "${ARCH}" in \
+         amd64) VSCODE_ARCH="x64" ;; \
+         arm64) VSCODE_ARCH="arm64" ;; \
+         *) echo "Unsupported architecture: ${ARCH}" >&2; exit 1 ;; \
+       esac \
+    && curl -fsSL "https://update.code.visualstudio.com/latest/linux-deb-${VSCODE_ARCH}/stable" -o /tmp/vscode.deb \
+    && (sudo dpkg -i /tmp/vscode.deb || true) \
     && sudo apt-get update \
-    && sudo apt-get install -y gnupg2 \
-    && sudo apt-get install -y software-properties-common \
-    && sudo wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add - \
-    && sudo add-apt-repository "deb [arch=${ARCH}] https://packages.microsoft.com/repos/vscode stable main" \
-    && sudo apt-get update \
-    && sudo DEBIAN_FRONTEND=noninteractive apt-get install -y code
+    && sudo DEBIAN_FRONTEND=noninteractive apt-get install -f -y \
+    && rm -f /tmp/vscode.deb
 
 #Making home writable
 RUN sudo chmod -R a+rwX /home
