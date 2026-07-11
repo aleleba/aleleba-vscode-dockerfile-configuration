@@ -48,6 +48,13 @@ sed 's/^USER_ENV_//' |
 # Append the result to /usr/bin/.bashrc
 while IFS= read -r line
 do
+  # Ensure the user's home directory exists before writing .bashrc
+  if [ ! -d "/home/${HOME_USER}" ]; then
+    sudo mkdir -p "/home/${HOME_USER}"
+    sudo chown root:root "/home/${HOME_USER}"
+    sudo chmod 755 "/home/${HOME_USER}"
+  fi
+
   # Check if the current user is root
   if [ "$(id -u)" = "0" ]; then
     echo "" >> /usr/bin/.bashrc
