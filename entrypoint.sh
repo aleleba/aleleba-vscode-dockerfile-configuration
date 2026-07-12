@@ -5,6 +5,13 @@ if [[ -z "${HOME_USER-}" ]]; then
     HOME_USER="vscode"
 fi
 
+# Detectar UID/GID del volumen montado en /home/${HOME_USER} (si ya existe),
+# permitir override explícito vía HOST_UID/HOST_GID, y por defecto usar 1000.
+DETECTED_UID=$(stat -c '%u' "/home/${HOME_USER}" 2>/dev/null || echo 1000)
+DETECTED_GID=$(stat -c '%g' "/home/${HOME_USER}" 2>/dev/null || echo 1000)
+TARGET_UID="${HOST_UID:-$DETECTED_UID}"
+TARGET_GID="${HOST_GID:-$DETECTED_GID}"
+
 if ! grep -q "HOME_USER=" /etc/environment; then
   sudo bash -c "echo HOME_USER=$HOME_USER >> /etc/environment"
 fi
@@ -66,8 +73,9 @@ do
 done
 
 USER="$HOME_USER"
-if ! id -u $HOME_USER > /dev/null 2>&1; then
-  sudo adduser --disabled-password --gecos "" --uid 1000 ${HOME_USER}
+if ! id -u "$HOME_USER" > /dev/null 2>&1; then
+  sudo groupadd -g "${TARGET_GID}" "${HOME_USER}" 2>/dev/null || true
+  sudo adduser --disabled-password --gecos "" --uid "${TARGET_UID}" --gid "${TARGET_GID}" "${HOME_USER}"
   sudo echo "$HOME_USER ALL=(ALL) NOPASSWD:ALL" | sudo tee -a /etc/sudoers.d/nopasswd > /dev/null
 
   # Creating .vscode folder if it doesn't exist
@@ -77,6 +85,22 @@ if ! id -u $HOME_USER > /dev/null 2>&1; then
 
   # Changing the property of the directory /home/${HOME_USER}/.vscode
   sudo chown -R ${HOME_USER} /home/${HOME_USER}/.vscode
+else
+  # Usuario ya existe (imagen/volumen reusado) — resincronizar UID/GID si cambiaron
+  CURRENT_UID=$(id -u "${HOME_USER}")
+  CURRENT_GID=$(id -g "${HOME_USER}")
+  CURRENT_GROUP=$(id -gn "${HOME_USER}")
+
+  if [ "$CURRENT_UID" != "$TARGET_UID" ] || [ "$CURRENT_GID" != "$TARGET_GID" ]; then
+    if [ "$CURRENT_GID" != "$TARGET_GID" ]; then
+      sudo groupmod -g "${TARGET_GID}" "${CURRENT_GROUP}"
+    fi
+    if [ "$CURRENT_UID" != "$TARGET_UID" ]; then
+      sudo usermod -u "${TARGET_UID}" "${HOME_USER}"
+    fi
+    sudo find / -xdev \( -user "${CURRENT_UID}" -o -group "${CURRENT_GID}" \) \
+      -exec chown -h "${TARGET_UID}:${TARGET_GID}" {} + 2>/dev/null || true
+  fi
 fi
 
 # Then execute entrypoint.sh

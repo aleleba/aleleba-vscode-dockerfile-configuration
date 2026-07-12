@@ -16,6 +16,7 @@ The following environment variables can be set when running the Docker container
 
 - `HOME_USER`: The username of the user running the container. This is used to set the correct permissions on files created in the container.
 - `VSCODE_TUNNEL_NAME`: The name of the SSH tunnel used by Visual Studio Code to connect to the container.
+- `HOST_UID` / `HOST_GID` (optional): Force the `HOME_USER` account to use a specific UID/GID instead of the default `1000`. If not set, the container will try to auto-detect the UID/GID from an existing `/home/${HOME_USER}` mount (useful when bind-mounting a host directory owned by a non-1000 user); if that can't be detected either, it falls back to `1000`. If the container is restarted/reused and the UID/GID changed, the existing user is resynced (`usermod`/`groupmod`) and its files re-owned accordingly.
 
 ### Custom Environment Variables
 
@@ -174,6 +175,8 @@ RUN echo 'source ~/.nvm/nvm.sh' >> ~/.bashrc
 
 
 > **Note:** If you are using this image as a base image in a Dockerfile, ensure that the value of `HOME_USER` is the same as the one you will use when creating the container. This is necessary to ensure that all configurations and packages are installed in the correct user directory.
+
+> **Note:** The `--uid 1000` in the example above is just illustrative. If you run the final container with `HOST_UID`/`HOST_GID` set (or with `/home/${HOME_USER}` bind-mounted from a host directory owned by another user), `entrypoint.sh` will resync this user's UID/GID at container start.
 
 > **Note:** To grant access to the server, please log into https://github.com/login/device and use the code XXXX-XXXX. You can view the container logs to get the code.
 
