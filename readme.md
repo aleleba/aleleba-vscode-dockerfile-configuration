@@ -16,7 +16,7 @@ The following environment variables can be set when running the Docker container
 
 - `HOME_USER`: The username of the user running the container. This is used to set the correct permissions on files created in the container.
 - `VSCODE_TUNNEL_NAME`: The name of the SSH tunnel used by Visual Studio Code to connect to the container.
-- `HOST_UID` / `HOST_GID` (optional): Force the `HOME_USER` account to use a specific UID/GID instead of the default `1000`. If not set, the container will try to auto-detect the UID/GID from an existing `/home/${HOME_USER}` mount (useful when bind-mounting a host directory owned by a non-1000 user); if that can't be detected either, it falls back to `1000`. If the container is restarted/reused and the UID/GID changed, the existing user is resynced (`usermod`/`groupmod`) and its files re-owned accordingly.
+- `HOST_UID` / `HOST_GID` (optional): Force the `HOME_USER` account to use a specific UID/GID instead of the default `1000`. This only applies the first time the user is created: if not set, the container will try to auto-detect the UID/GID from an existing `/home/${HOME_USER}` mount (useful when bind-mounting a host directory owned by a non-1000 user); if that can't be detected either (or the mount reports UID/GID `0`, which some bind mount setups do), it falls back to `1000`. If the container is restarted/reused and the user already exists, its UID/GID is only resynced (`usermod`/`groupmod`, with files re-owned accordingly) when `HOST_UID`/`HOST_GID` are explicitly set — auto-detection from the mount is not used to resync an existing user, since mount metadata can be unreliable across restarts.
 
 ### Custom Environment Variables
 
